@@ -17,12 +17,12 @@ const createWindow = () => {
     },
   })
 
-  // mainWindow.removeMenu()
+  mainWindow.removeMenu()
   mainWindow.loadURL(frontendURL)
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 }
 
 app.whenReady().then(() => {
