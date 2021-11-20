@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import styles from './ResourcePackHandler.module.css';
-import fs from 'fs'
-import os from 'os'
+
+const getHomeDir = () => {
+  const {homeDir} = window.mineman
+  return homeDir;
+}
 
 const ResourcePackHandler = () => {
-  const [localVersion, setLocalVersion] = useState('0')
+  // const [localVersion, setLocalVersion] = useState()
 
   useEffect(() => {
-    console.log('os', os.homedir())
-    console.log('process.env', process.env.USERPROFILE)
-    // fs.readFile(process.env.APPDATA)
+    console.log('ResourcePackHandler', getHomeDir())
   }, [])
 
   return (
