@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import styles from './ResourcePackHandler.module.css';
+import LocalVersionLabel from '../LocalVersionLabel'
+import RemoteVersionLabel from '../RemoteVersionLabel'
 
 const ResourcePackHandler = () => {
   const [localVersion, setLocalVersion] = useState()
   const [remoteVersion, setRemoteVersion] = useState()
-  const [downloading, setDownloading] = useState(false)
-  const [progress, setProgress] = useState('')
 
   useEffect(() => {
     const getRPVersions = async () => {
@@ -19,23 +19,10 @@ const ResourcePackHandler = () => {
     getRPVersions()
   }, [])
 
-  const onClick = async () => {
-    setDownloading(true)
-    const rp = await window.mineman.downloadRP(null, setProgress);
-    if(rp) setDownloading(false)
-    console.log(rp)
-  }
-
   return (
     <div className={styles.resourcePack}>
-      <p>Resource pack status</p>
-      <p>Local version: {localVersion || 'Loading'}</p>
-      <p>Remote version: {remoteVersion || 'Loading'}</p>
-      {(!downloading && (
-        <button type="button" onClick={onClick}>Download latest Resource Pack version</button>
-      )) || (
-        <p>Downloading... {progress ? `${progress}% done.` : null}</p>
-      )}
+      <RemoteVersionLabel version={remoteVersion} />
+      <LocalVersionLabel version={localVersion} />
     </div>
   );
 }

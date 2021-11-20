@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+  font-weight: 300;
+  backdrop-filter: blur(10px);
+  background-color: rgba(50, 50, 50, 0.45);
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+}
+
+.label {
+  font-weight: 600;
+}
