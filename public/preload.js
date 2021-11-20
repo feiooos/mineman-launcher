@@ -40,17 +40,10 @@ const downloadRP = async (dwURL, setProgress) => {
       const file = fs.createWriteStream(path.join(rpDirPath, 'cbas+.zip'));
       const length = parseInt(res.headers['content-length'], 10)
       let downloaded = 0
-
       res.on('data', (chunk) => {
         file.write(chunk);
         downloaded += chunk.length;
         setProgress(Math.round(100.0 * downloaded / length).toString())
-
-        // res.pipe(file);
-        // file.on('finish', () => {
-        //   file.close();
-        //   resolve(true);
-        // });
       })
       .on('end', () => {
           file.end();

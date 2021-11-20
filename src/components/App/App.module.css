@@ -10,6 +10,9 @@ h1 {
   background-size: cover;
   background-position: center;
   min-height: 100vh;
+}
+
+.app main {
   padding: 2rem 0;
 }
 
