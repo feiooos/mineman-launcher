@@ -1,7 +1,17 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, protocol } = require('electron')
 const path = require('path')
+const url = require('url')
 
-const frontendURL = 'http://localhost:3000'
+// Handle creating/removing shortcuts on Windows when installing/uninstalling
+if (require('electron-squirrel-startup')) {
+  app.quit();
+}
+
+const startUrl = process.env.BROWSER_START_URL || url.format({
+    pathname: path.join(__dirname, '/../build/index.html'),
+    protocol: 'file:',
+    slashes: true
+});
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
     show: false,
@@ -17,16 +27,30 @@ const createWindow = () => {
     },
   })
 
-  // mainWindow.removeMenu()
-  mainWindow.loadURL(frontendURL)
+  mainWindow.removeMenu()
+  mainWindow.loadURL(startUrl)
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
   // mainWindow.webContents.openDevTools()
 }
 
+function setupLocalFilesNormalizerProxy() {
+  protocol.registerHttpProtocol(
+    "file",
+    (request, callback) => {
+      const url = request.url.substr(8);
+      callback({ path: path.normalize(`${__dirname}/${url}`) });
+    },
+    (error) => {
+      if (error) console.error("Failed to register protocol");
+    }
+  );
+}
+
 app.whenReady().then(() => {
   createWindow()
+  setupLocalFilesNormalizerProxy();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()

@@ -18,7 +18,7 @@ const getRPLocalVersion = () => {
         .then((zip) => {
           const files = Object.keys(zip.files);
           const versionFile = files.filter((f) => f.includes('version.txt'))[0]
-          if (!versionFile) return reject('No version file found')
+          if (!versionFile) return reject('No version file found. Update your resource pack.')
 
           const versionFilePath = path.join(rpDirPath, versionFile)
           fs.readFile(versionFilePath, 'utf-8', (versionError, versionData) => {
@@ -47,6 +47,10 @@ const downloadRP = async (dwURL, setProgress, endCB) => {
   const rpURL = dwURL || await getRPDownloadURL();
   console.log(rpURL)
   return new Promise ((resolve, reject) => {
+    fs.mkdir(rpDirPath, { recursive: true }, (err) => {
+      if (err) throw err;
+    });
+
     https.get(rpURL)
     .on('response', (res) => {
       if(res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
