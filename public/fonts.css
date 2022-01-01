@@ -1,0 +1,31 @@
+@font-face {
+    font-family: 'minecraftbold';
+    src: url('/fonts/minecraftbold-webfont.woff2') format('woff2'),
+         url('/fonts/minecraftbold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'minecraftbold_italic';
+    src: url('/fonts/minecraftbolditalic-webfont.woff2') format('woff2'),
+         url('/fonts/minecraftbolditalic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'minecraftitalic';
+    src: url('/fonts/minecraftitalic-webfont.woff2') format('woff2'),
+         url('/fonts/minecraftitalic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'minecraftregular';
+    src: url('/fonts/minecraftregular-webfont.woff2') format('woff2'),
+         url('/fonts/minecraftregular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}

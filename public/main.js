@@ -7,8 +7,8 @@ const createWindow = () => {
     show: false,
     width:800,
     height:640,
-    maxHeight:640,
-    maxWidth:800,
+    // maxHeight:640,
+    // maxWidth:800,
     minHeight:640,
     minWidth:800,
     webPreferences: {
@@ -17,7 +17,7 @@ const createWindow = () => {
     },
   })
 
-  mainWindow.removeMenu()
+  // mainWindow.removeMenu()
   mainWindow.loadURL(frontendURL)
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()

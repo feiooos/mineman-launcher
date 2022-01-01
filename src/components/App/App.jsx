@@ -1,5 +1,6 @@
 import ResourcePackHandler from '../ResourcePackHandler';
 import styles from './App.module.css'
+import PlayButton from '../PlayButton'
 
 function App() {
   return (
@@ -7,9 +8,10 @@ function App() {
       <div className={styles.blurryBg} />
       <main>
         <header className={styles.appHeader}>
-          <h1>Mineman Launcher</h1>
+          <h1>MINEMAN LAUNCHER</h1>
         </header>
-        <ResourcePackHandler />
+          <ResourcePackHandler />
+          <PlayButton />
       </main>
     </div>
   );

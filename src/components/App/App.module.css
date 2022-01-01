@@ -16,10 +16,21 @@ h1 {
 }
 
 .app main {
-  padding: 2rem;
+  padding: 4em 6em;
+  min-height: calc(100vh - 8em);
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .appHeader {
   color: white;
   text-align: center;
+  font-size: 2rem;
+}
+
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }

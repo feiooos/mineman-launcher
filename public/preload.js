@@ -3,14 +3,31 @@ const os = require('os')
 const fs = require('fs')
 const path = require('path')
 const https = require('https')
+const JSZip = require('jszip')
 
 const rpDirPath = path.join(os.homedir(), 'AppData', 'Roaming', '.minecraft', 'resourcepacks')
 const getRPLocalVersion = () => {
-  if(os.platform() !== 'win32') return null
+  return new Promise((resolve, reject) => {
+    if(os.platform() !== 'win32') return reject(null)
 
-  return fs.readFile(rpDirPath, (err, data) => {
-    if(err?.code === "ENOENT") return null
-    return true
+    const rsPath = path.join(rpDirPath, 'cbas+.zip')
+    return fs.readFile(rsPath, (rpError, rpData) => {
+      if(rpError?.code === "ENOENT") return reject('No resource pack found')
+
+      return JSZip.loadAsync(rpData)
+        .then((zip) => {
+          const files = Object.keys(zip.files);
+          const versionFile = files.filter((f) => f.includes('version.txt'))[0]
+          if (!versionFile) return reject('No version file found')
+
+          const versionFilePath = path.join(rpDirPath, versionFile)
+          fs.readFile(versionFilePath, 'utf-8', (versionError, versionData) => {
+            if(versionError?.code === "ENOENT") return reject("Couldn't open version file")
+
+            resolve(versionData)
+          })
+        });
+    })
   })
 }
 
@@ -26,14 +43,14 @@ const getRPDownloadURL = async () => {
   return releases[0].assets[0].browser_download_url
 }
 
-const downloadRP = async (dwURL, setProgress) => {
+const downloadRP = async (dwURL, setProgress, endCB) => {
   const rpURL = dwURL || await getRPDownloadURL();
   console.log(rpURL)
   return new Promise ((resolve, reject) => {
     https.get(rpURL)
     .on('response', (res) => {
       if(res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-        downloadRP(res.headers.location, setProgress)
+        downloadRP(res.headers.location, setProgress, endCB)
         return;
       }
 
@@ -46,8 +63,9 @@ const downloadRP = async (dwURL, setProgress) => {
         setProgress(Math.round(100.0 * downloaded / length).toString())
       })
       .on('end', () => {
-          file.end();
-          resolve();
+        resolve(true);
+        endCB();
+        file.end();
       })
     })
     .on("error", (err) => {

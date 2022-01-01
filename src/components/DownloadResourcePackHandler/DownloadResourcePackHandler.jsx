@@ -1,24 +1,24 @@
 import { useState } from 'react';
 import styles from './DownloadResourcePackHandler.module.css';
 
-const DownloadResourcePackHandler = () => {
+const DownloadResourcePackHandler = ({onClickCB, onEndCB, progress, setProgress}) => {
   const [downloading, setDownloading] = useState(false)
-  const [progress, setProgress] = useState('')
+  // const [progress, setProgress] = useState('')
+
+  const endCB = () => {
+    setDownloading(false)
+    onEndCB();
+  }
 
   const onClick = async () => {
+    onClickCB();
     setDownloading(true)
-    const rp = await window.mineman.downloadRP(null, setProgress);
-    if(rp) setDownloading(false)
-    console.log(rp)
+    window.mineman.downloadRP(null, setProgress, endCB);
   }
 
   return (
     <div className={styles.container}>
-      {(!downloading && (
-        <button type="button" onClick={onClick} className={`material-icons-round ${styles.button}`}>sync</button>
-      )) || (
-        <p>Downloading... {progress ? `${progress}% done.` : null}</p>
-      )}
+      <button disabled={downloading} type="button" onClick={onClick} className={`material-icons-round ${styles.button} ${!downloading ? styles.buttonHover : ''}`}>file_download</button>
     </div>
   );
 }

@@ -1,0 +1,26 @@
+.container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.button {
+  width: 100%;
+  display: block;
+  margin: 2em auto;
+  font-family: minecraftregular;
+  border: none;
+  backdrop-filter: blur(10px);
+  padding: 0.5em 1em;
+  background-color: rgb(197, 197, 197);
+  font-size: 1.5em;
+  border: 4px outset rgb(197, 197, 197);
+  color: black;
+}
+
+.button:hover {
+  /* background-color: rgb(230, 230, 230); */
+  border-style: inset;
+  padding-top: 0.6em
+}
