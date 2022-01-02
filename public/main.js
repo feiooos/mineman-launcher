@@ -2,6 +2,19 @@ const { app, BrowserWindow, protocol } = require('electron')
 const path = require('path')
 const url = require('url')
 
+function setupLocalFilesNormalizerProxy() {
+  protocol.registerHttpProtocol(
+    "file",
+    (request, callback) => {
+      const url = request.url.substr(8);
+      callback({ path: path.normalize(`${__dirname}/${url}`) });
+    },
+    (error) => {
+      if (error) console.error("Failed to register protocol");
+    }
+  );
+}
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling
 if (require('electron-squirrel-startup')) {
   app.quit();
@@ -33,19 +46,6 @@ const createWindow = () => {
     mainWindow.show()
   })
   // mainWindow.webContents.openDevTools()
-}
-
-function setupLocalFilesNormalizerProxy() {
-  protocol.registerHttpProtocol(
-    "file",
-    (request, callback) => {
-      const url = request.url.substr(8);
-      callback({ path: path.normalize(`${__dirname}/${url}`) });
-    },
-    (error) => {
-      if (error) console.error("Failed to register protocol");
-    }
-  );
 }
 
 app.whenReady().then(() => {
