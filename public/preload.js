@@ -81,7 +81,7 @@ const downloadRP = async (dwURL, setProgress, endCB) => {
   })
 }
 
-const launchMinecraft = async () => {
+const launchMinecraft = () => new Promise(async (resolveLaunch) => {
   const winStoreAppId = 'Microsoft.4297127D64EC6'
   const { exec } = require('child_process');
   const winStoreApp = await new Promise((resolve) => {
@@ -96,26 +96,36 @@ const launchMinecraft = async () => {
     })
   })
 
-  const microsoftLauncherPath = `C:\\Program Files (x86)\\Minecraft Launcher\\MinecraftLauncher.exe`
-  const microsoftLauncher = await new Promise((resolve) => {
-    return fs.access(microsoftLauncherPath, (error) => {
-      if(error) resolve({isInstalled: false, error})
+  const microsoftLauncherPaths = [
+    `C:\\Program Files (x86)\\Minecraft Launcher\\MinecraftLauncher.exe`,
+    `C:\\Program Files (x86)\\Minecraft\\MinecraftLauncher.exe`
+  ]
+  const microsoftLauncher = await new Promise(async (resolve) => {
+    const existingLauncherPath = await new Promise((r) => {
+      microsoftLauncherPaths.forEach((path)=> {
+        fs.access(path, (error) => {
+          if(error) return false;
 
-      resolve({isInstalled: true})
+          return r(path);
+        })
+      })
     })
+    if(!existingLauncherPath) return resolve({isInstalled: false})
+
+    return resolve({isInstalled: true, path: existingLauncherPath.split('\\MinecraftLauncher.exe')[0]})
   })
 
   if(winStoreApp.isInstalled) {
     exec(`explorer.exe shell:appsFolder\\${winStoreApp.packageFamilyName}!Minecraft`)
-    return 1
+    return resolveLaunch(1)
   }
   if(microsoftLauncher.isInstalled) {
-    exec(`cd "C:\\Program Files (x86)\\Minecraft Launcher" && MinecraftLauncher.exe`)
-    return 2
+    exec(`cd "${microsoftLauncher.path}" && MinecraftLauncher.exe`, console.log)
+    return resolveLaunch(2)
   }
 
-  return 0;
-}
+  return resolveLaunch(0);
+});
 
 contextBridge.exposeInMainWorld('mineman', {
   homeDir: os.homedir(),
