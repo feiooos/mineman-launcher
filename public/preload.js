@@ -95,7 +95,6 @@ const launchMinecraft = () => new Promise(async (resolveLaunch) => {
       resolve({isInstalled: !!stdout, packageFamilyName})
     })
   })
-
   const microsoftLauncherPaths = [
     `C:\\Program Files (x86)\\Minecraft Launcher\\MinecraftLauncher.exe`,
     `C:\\Program Files (x86)\\Minecraft\\MinecraftLauncher.exe`
@@ -104,7 +103,7 @@ const launchMinecraft = () => new Promise(async (resolveLaunch) => {
     const existingLauncherPath = await new Promise((r) => {
       microsoftLauncherPaths.forEach((path)=> {
         fs.access(path, (error) => {
-          if(error) return false;
+          if(error) return r(false);
 
           return r(path);
         })

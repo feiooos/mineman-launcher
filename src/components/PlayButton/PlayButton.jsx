@@ -2,14 +2,19 @@ import { useState } from 'react'
 import styles from './PlayButton.module.css'
 const PlayButton = () => {
   const [launcher, setLauncher] = useState()
+  const [disabled, setDisabled] = useState()
 
   const onClickLaunchMinecraft = async () => {
+    setDisabled(true)
     const { launchMinecraft } = window.mineman
+    console.log('click')
     const launcherType = await launchMinecraft();
+    console.log(launcherType)
     setLauncher(launcherType)
 
     setTimeout(() => {
       setLauncher(null)
+      setDisabled(false)
     }, 2000)
   }
 
@@ -19,7 +24,7 @@ const PlayButton = () => {
   if(launcher === 2) label = 'Launching with Microsoft launcher...'
   return (
   <div className={styles.container}>
-    <button className={styles.button} onClick={onClickLaunchMinecraft}>{label}</button>
+    <button disabled={disabled} className={`${styles.button} ${disabled ? '' : styles.buttonHover}`} onClick={onClickLaunchMinecraft}>{label}</button>
   </div>
 )}
 
