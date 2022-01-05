@@ -3,8 +3,9 @@ const os = require('os')
 const fs = require('fs')
 const path = require('path')
 const https = require('https')
-const JSZip = require('jszip')
+const checksum = require('checksum')
 
+const localRPVersionKey = 'mineman-rp-version'
 const rpDirPath = path.join(os.homedir(), 'AppData', 'Roaming', '.minecraft', 'resourcepacks')
 const getRPLocalVersion = () => {
   return new Promise((resolve, reject) => {
@@ -12,21 +13,16 @@ const getRPLocalVersion = () => {
 
     const rsPath = path.join(rpDirPath, 'cbas+.zip')
     return fs.readFile(rsPath, (rpError, rpData) => {
-      if(rpError?.code === "ENOENT") return reject('No resource pack found')
+      if(rpError?.code === "ENOENT") return reject('No resource pack found.')
 
-      return JSZip.loadAsync(rpData)
-        .then((zip) => {
-          const files = Object.keys(zip.files);
-          const versionFile = files.filter((f) => f.includes('version.txt'))[0]
-          if (!versionFile) return reject('No version file found. Update your resource pack.')
+      return checksum.file(rsPath, (err, sum) => {
+        if (err) return reject(`Failed to check file hash due to ${err}`)
 
-          const versionFilePath = path.join(rpDirPath, versionFile)
-          fs.readFile(versionFilePath, 'utf-8', (versionError, versionData) => {
-            if(versionError?.code === "ENOENT") return reject("Couldn't open version file")
+        const {hash, version} = JSON.parse(window.localStorage.getItem(localRPVersionKey)) || {}
+        if(hash === sum) return resolve(version)
 
-            resolve(versionData)
-          })
-        });
+        reject('Version mismatch. Update your resource pack.')
+      })
     })
   })
 }
@@ -45,7 +41,6 @@ const getRPDownloadURL = async () => {
 
 const downloadRP = async (dwURL, setProgress, endCB) => {
   const rpURL = dwURL || await getRPDownloadURL();
-  console.log(rpURL)
   return new Promise ((resolve, reject) => {
     fs.mkdir(rpDirPath, { recursive: true }, (err) => {
       if (err) throw err;
@@ -58,7 +53,8 @@ const downloadRP = async (dwURL, setProgress, endCB) => {
         return;
       }
 
-      const file = fs.createWriteStream(path.join(rpDirPath, 'cbas+.zip'));
+      const filePath = path.join(rpDirPath, 'cbas+.zip')
+      const file = fs.createWriteStream(filePath);
       const length = parseInt(res.headers['content-length'], 10)
       let downloaded = 0
       res.on('data', (chunk) => {
@@ -66,7 +62,13 @@ const downloadRP = async (dwURL, setProgress, endCB) => {
         downloaded += chunk.length;
         setProgress(Math.round(100.0 * downloaded / length).toString())
       })
-      .on('end', () => {
+      .on('end', async () => {
+        const version = await getRPRemoteVersion()
+        checksum.file(filePath, (err, sum) => {
+          if (err) return reject(`Failed to check file hash due to ${err}`)
+
+          window.localStorage.setItem(localRPVersionKey, JSON.stringify({version, hash: sum}))
+        })
         resolve(true);
         endCB();
         file.end();
@@ -79,9 +81,46 @@ const downloadRP = async (dwURL, setProgress, endCB) => {
   })
 }
 
+const launchMinecraft = async () => {
+  const winStoreAppId = 'Microsoft.4297127D64EC6'
+  const { exec } = require('child_process');
+  const winStoreApp = await new Promise((resolve) => {
+    exec(`powershell get-appxpackage *${winStoreAppId}*`, (_, stdout) => {
+      if(!stdout) return resolve({isInstalled: false});
+
+      const parsedOutput = stdout.split('\r\n')
+      const packageFamilyName = parsedOutput.find((line) => {
+        return line.includes('PackageFamilyName')
+      }).split(' : ')[1]
+      resolve({isInstalled: !!stdout, packageFamilyName})
+    })
+  })
+
+  const microsoftLauncherPath = `C:\\Program Files (x86)\\Minecraft Launcher\\MinecraftLauncher.exe`
+  const microsoftLauncher = await new Promise((resolve) => {
+    return fs.access(microsoftLauncherPath, (error) => {
+      if(error) resolve({isInstalled: false, error})
+
+      resolve({isInstalled: true})
+    })
+  })
+
+  if(winStoreApp.isInstalled) {
+    exec(`explorer.exe shell:appsFolder\\${winStoreApp.packageFamilyName}!Minecraft`)
+    return 1
+  }
+  if(microsoftLauncher.isInstalled) {
+    exec(`cd "C:\\Program Files (x86)\\Minecraft Launcher" && MinecraftLauncher.exe`)
+    return 2
+  }
+
+  return 0;
+}
+
 contextBridge.exposeInMainWorld('mineman', {
   homeDir: os.homedir(),
   getRPLocalVersion,
   getRPRemoteVersion,
-  downloadRP
+  downloadRP,
+  launchMinecraft
 })

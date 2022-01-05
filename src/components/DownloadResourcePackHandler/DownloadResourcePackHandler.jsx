@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import styles from './DownloadResourcePackHandler.module.css';
 
-const DownloadResourcePackHandler = ({onClickCB, onEndCB, progress, setProgress}) => {
+const DownloadResourcePackHandler = ({onClickCB, onEndCB, setProgress, upToDate}) => {
   const [downloading, setDownloading] = useState(false)
-  // const [progress, setProgress] = useState('')
 
   const endCB = () => {
     setDownloading(false)
@@ -16,9 +15,13 @@ const DownloadResourcePackHandler = ({onClickCB, onEndCB, progress, setProgress}
     window.mineman.downloadRP(null, setProgress, endCB);
   }
 
+  let icon = 'file_download'
+  if(downloading) icon = 'hourglass_bottom'
+  if(upToDate) icon = 'verified'
+
   return (
     <div className={styles.container}>
-      <button disabled={downloading} type="button" onClick={onClick} className={`material-icons-round ${styles.button} ${!downloading ? styles.buttonHover : ''}`}>file_download</button>
+      <button disabled={downloading || upToDate} type="button" onClick={onClick} className={`material-icons-round ${styles.button} ${!downloading && !upToDate ? styles.buttonHover : ''}`}>{icon}</button>
     </div>
   );
 }

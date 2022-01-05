@@ -40,8 +40,8 @@ const ResourcePackHandler = () => {
   useEffect(() => {
     setLoading(!localVersion && !remoteVersion)
     setNoRPInstalled(!localVersion)
-    setUpToDate(localVersion === remoteVersion)
-  }, [localVersion, remoteVersion])
+    setUpToDate(!error && localVersion === remoteVersion)
+  }, [localVersion, remoteVersion, error])
 
   const label = () => {
     if(error) return <p className={styles.label}>{error}</p>
@@ -59,9 +59,9 @@ const ResourcePackHandler = () => {
       </div>
       <DownloadResourcePackHandler
         onClickCB={onClickDownload}
-        progress={progress}
         setProgress={setProgress}
         onEndCB={onEndCB}
+        upToDate={!loading && upToDate}
       />
     </div>
   );
