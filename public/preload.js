@@ -1,4 +1,4 @@
-const { contextBridge } = require('electron')
+const { contextBridge, ipcRenderer } = require('electron')
 const os = require('os')
 const fs = require('fs')
 const path = require('path')
@@ -126,10 +126,15 @@ const launchMinecraft = () => new Promise(async (resolveLaunch) => {
   return resolveLaunch(0);
 });
 
+const quitApp = () => {
+  ipcRenderer.invoke('quit-app');
+}
+
 contextBridge.exposeInMainWorld('mineman', {
   homeDir: os.homedir(),
   getRPLocalVersion,
   getRPRemoteVersion,
   downloadRP,
-  launchMinecraft
+  launchMinecraft,
+  quitApp
 })

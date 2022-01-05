@@ -6,13 +6,17 @@ const PlayButton = () => {
 
   const onClickLaunchMinecraft = async () => {
     setDisabled(true)
-    const { launchMinecraft } = window.mineman
+    const { launchMinecraft, quitApp } = window.mineman
     console.log('click')
     const launcherType = await launchMinecraft();
     console.log(launcherType)
     setLauncher(launcherType)
 
     setTimeout(() => {
+      if (launcherType !== 0) {
+        quitApp()
+      }
+
       setLauncher(null)
       setDisabled(false)
     }, 2000)

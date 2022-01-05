@@ -1,4 +1,4 @@
-const { app, BrowserWindow, protocol } = require('electron')
+const { app, BrowserWindow, protocol, ipcMain } = require('electron')
 const path = require('path')
 const url = require('url')
 
@@ -60,3 +60,7 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
 })
+
+ipcMain.handle('quit-app', () => {
+  app.quit();
+});
