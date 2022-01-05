@@ -22,5 +22,6 @@
 .buttonHover:hover {
   /* background-color: rgb(230, 230, 230); */
   border-style: inset;
-  padding-top: 0.6em
+  padding-top: 0.6em;
+  cursor: pointer;
 }
