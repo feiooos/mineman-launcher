@@ -6,6 +6,7 @@
   "private": true,
   "main": "public/main.js",
   "homepage": "./",
+  "license": "OtherLicense",
   "dependencies": {
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^11.2.7",
