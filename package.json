@@ -65,19 +65,23 @@
       "buildResources": "public"
     },
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "./build/icon.ico"
     }
   },
   "config": {
     "forge": {
       "packagerConfig": {
-        "asar": true
+        "asar": true,
+        "icon": "./build/icon.ico"
       },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "mineman-launcher"
+            "name": "mineman-launcher",
+            "icon": "./build/icon.ico",
+            "setupIcon": "./build/icon.ico"
           }
         }
       ]
