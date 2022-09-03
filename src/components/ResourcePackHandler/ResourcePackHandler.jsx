@@ -19,7 +19,10 @@ const ResourcePackHandler = () => {
       setLocalVersion(lv || 'Unset')
       setRemoteVersion(rv)
     })
-    .catch(setError)
+    .catch((error) => {
+      setError(error)
+      setLoading(false)
+    })
   }
 
   const onEndCB = () => {
@@ -52,9 +55,11 @@ const ResourcePackHandler = () => {
     return <p className={styles.label}>There is a newer version of the cbas+ resource pack</p>
   }
 
+  const labelBackgroundStyles = !updating && (!upToDate || noRPInstalled) ? styles.warningLabelContainer : styles.labelContainer;
+
   return (
     <div className={styles.resourcePack}>
-      <div className={styles.labelContainer}>
+      <div className={labelBackgroundStyles}>
         {label()}
       </div>
       <DownloadResourcePackHandler

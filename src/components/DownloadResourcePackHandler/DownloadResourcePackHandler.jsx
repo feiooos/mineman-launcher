@@ -19,8 +19,9 @@ const DownloadResourcePackHandler = ({onClickCB, onEndCB, setProgress, upToDate}
   if(downloading) icon = 'hourglass_bottom'
   if(upToDate) icon = 'verified'
 
+  const containerStyles = (!downloading && !upToDate) ? styles.warningContainer : styles.container
   return (
-    <div className={styles.container}>
+    <div className={containerStyles}>
       <button disabled={downloading || upToDate} type="button" onClick={onClick} className={`material-icons-round ${styles.button} ${!downloading && !upToDate ? styles.buttonHover : ''}`}>{icon}</button>
     </div>
   );

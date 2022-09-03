@@ -24,6 +24,19 @@
   flex-direction: column;
 }
 
+.warningLabelContainer {
+  min-height: calc(6.2rem - 2em);
+  backdrop-filter: blur(10px);
+  background-color: rgba(201, 101, 101, 0.5);
+  border-radius: 1em 0 0 1em;
+  padding: 1.5em 2em;
+  flex: 1;
+  display: flex;
+  align-content: stretch;
+  justify-content: center;
+  flex-direction: column;
+}
+
 .label {
   font-size: 1.5em;
   font-weight: normal;
