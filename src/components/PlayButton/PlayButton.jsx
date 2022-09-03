@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import styles from './PlayButton.module.css'
+
 const PlayButton = () => {
   const [launcher, setLauncher] = useState()
   const [disabled, setDisabled] = useState()
@@ -7,9 +8,7 @@ const PlayButton = () => {
   const onClickLaunchMinecraft = async () => {
     setDisabled(true)
     const { launchMinecraft, quitApp } = window.mineman
-    console.log('click')
     const launcherType = await launchMinecraft();
-    console.log(launcherType)
     setLauncher(launcherType)
 
     setTimeout(() => {

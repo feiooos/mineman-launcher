@@ -11,11 +11,25 @@
   position: relative;
 }
 
+.warningContainer {
+  margin-left: 0.5em;
+  backdrop-filter: blur(10px);
+  /* background-color: rgba(50, 50, 50, 0.45); */
+  background-color: rgba(201, 101, 101, 0.5);
+  border-radius: 0 1em 1em 0;
+  min-width: 8em;
+  max-width: 8em;
+  min-height: calc(7.2rem);
+  display: flex;
+  align-items: stretch;
+  position: relative;
+}
+
 .button {
   display: block;
   background-color: transparent;
   color: white;
-  border:none;
+  border: none;
   font-size: 3em;
   flex: 1;
 }

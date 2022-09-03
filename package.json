@@ -6,6 +6,7 @@
   "private": true,
   "main": "public/main.js",
   "homepage": "./",
+  "license": "OtherLicense",
   "dependencies": {
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^11.2.7",
@@ -63,41 +64,25 @@
     "directories": {
       "buildResources": "public"
     },
-    "mac": {
-      "target": "dmg"
-    },
     "win": {
-      "target": "nsis"
-    },
-    "linux": {
-      "target": "deb"
+      "target": "nsis",
+      "icon": "./build/icon.ico"
     }
   },
   "config": {
     "forge": {
       "packagerConfig": {
-        "asar": true
+        "asar": true,
+        "icon": "./build/icon.ico"
       },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "mineman-launcher"
+            "name": "mineman-launcher",
+            "icon": "./build/icon.ico",
+            "setupIcon": "./build/icon.ico"
           }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
         }
       ]
     }

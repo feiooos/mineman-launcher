@@ -1,0 +1,37 @@
+name: Build app and release
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v5.5
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        default_bump: minor
+        release_branches: main
+    - name: Install node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - name: Install dependencies
+      run: |
+        npm install
+    - name: Build application
+      run: |
+        npm run make
+        mv "out/make/squirrel.windows/x64/mineman-launcher-0.1.0 Setup.exe" "mineman-launcher-${{ steps.tag_version.outputs.new_tag }}-setup.exe"
+        ls
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          mineman-launcher-${{ steps.tag_version.outputs.new_tag }}-setup.exe
+        tag_name: ${{ steps.tag_version.outputs.new_tag }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
