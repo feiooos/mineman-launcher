@@ -26,6 +26,9 @@ jobs:
     - name: Build application
       run: |
         npm run make
+        ls -lah
+        ls -lah out
+        cat ${{ steps.tag_version.outputs.new_tag }}
         mv "out/make/squirrel.windows/x64/mineman-launcher-0.1.0 Setup.exe" "out/make/squirrel.windows/x64/mineman-launcher-${{ steps.tag_version.outputs.new_tag }}-setup.exe"
     - name: Release
       uses: softprops/action-gh-release@v1
