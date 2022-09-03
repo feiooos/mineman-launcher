@@ -15,11 +15,11 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         default_bump: minor
-        release_branches: test
+        release_branches: main
     - name: Install node
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
     - name: Build application
       run: npm run make
       run: mv "out/make/squirrel.windows/x64/mineman-launcher-0.1.0 Setup.exe" "out/make/squirrel.windows/x64/mineman-launcher-${{ steps.tag_version.outputs.new_tag }}-setup.exe"
