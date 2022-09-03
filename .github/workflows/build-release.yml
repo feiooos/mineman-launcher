@@ -26,13 +26,13 @@ jobs:
     - name: Build application
       run: |
         npm run make
-        ls out/make
         mv "out/make/squirrel.windows/x64/mineman-launcher-0.1.0 Setup.exe" "mineman-launcher-${{ steps.tag_version.outputs.new_tag }}-setup.exe"
+        ls
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          out/make/squirrel.windows/x64/mineman-launcher-${{ steps.tag_version.outputs.new_tag }}-setup.exe
+          mineman-launcher-${{ steps.tag_version.outputs.new_tag }}-setup.exe
         tag_name: ${{ steps.tag_version.outputs.new_tag }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
