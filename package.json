@@ -51,7 +51,7 @@
     "@electron-forge/maker-zip": "^6.0.0-beta.61",
     "concurrently": "^6.5.1",
     "cross-env": "^7.0.3",
-    "electron": "^16.0.5",
+    "electron": "^22.3.25",
     "wait-on": "^6.0.0"
   },
   "build": {
